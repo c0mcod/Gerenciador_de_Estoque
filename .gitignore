@@ -1,0 +1,2 @@
+*.log
+src/br/com/estoque/connection/ConnectionFactory.java
