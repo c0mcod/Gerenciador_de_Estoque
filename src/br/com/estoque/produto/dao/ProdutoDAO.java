@@ -12,7 +12,7 @@ import br.com.estoque.produto.model.Produto;
 
 public class ProdutoDAO {
 	public void CadastrarProduto(Produto produto) throws SQLException {
-		String sql = "INSERT INTO (nome, quantidade, preco, id_fornecedor) VALUES(?, ?, ?, ?)";
+		String sql = "INSERT INTO produto(nome, quantidade, preco, id_fornecedor) VALUES(?, ?, ?, ?)";
 		Connection conn = null;
 		PreparedStatement pstm = null;
 		
@@ -39,7 +39,7 @@ public class ProdutoDAO {
 	}
 
 	public List<Produto> getProdutos() throws SQLException {
-		String sql = "SELECT * FROM produtos";
+		String sql = "SELECT * FROM produto";
 		List<Produto> produtos = new ArrayList<Produto>();
 		
 		Connection conn = null;
