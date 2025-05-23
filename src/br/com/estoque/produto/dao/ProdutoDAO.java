@@ -78,7 +78,7 @@ public class ProdutoDAO {
 	}
 
 	public void atualizarProduto(Produto produto) throws SQLException {
-		String sql = "UPDATE produtos SET nome = ?, quantidade = ?, preco = ?, id_fornecedor = ?" + "WHERE id = ?";
+		String sql = "UPDATE produto SET nome = ?, quantidade = ?, preco = ?, id_fornecedor = ? WHERE id = ?";
 		Connection conn = null;
 		PreparedStatement pstm = null; 
 		
