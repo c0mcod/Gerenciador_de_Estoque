@@ -30,7 +30,7 @@ public class Interface {
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 		EstoqueProdutoController PC = new EstoqueProdutoController();
-		EstoqueFornecedorController FP = new EstoqueFornecedorController();
+		EstoqueFornecedorController FC = new EstoqueFornecedorController();
 		
 		// Criação da janela principal
 		JFrame frameJanela = new JFrame();
@@ -70,7 +70,7 @@ public class Interface {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				FC.gerenciarFornecedor();
 			}
 		});
 		

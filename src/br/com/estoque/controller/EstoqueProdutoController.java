@@ -173,7 +173,6 @@ public class EstoqueProdutoController {
 
 			}
 		});
-		// FIM DO BOTÃO CADASTRAR
 
 		// BOTÃO ATUALIZAR
 		btnAtualizar.addActionListener(new ActionListener() {
@@ -262,7 +261,7 @@ public class EstoqueProdutoController {
 
 			}
 		});
-		// FIM DO BOTÃO ATUALIZAR
+		
 
 		// BOTÃO DELETAR
 		btnExcluir.addActionListener(new ActionListener() {
@@ -326,7 +325,7 @@ public class EstoqueProdutoController {
 				btnE.setVisible(true);
 			}
 		});
-		// FIM DO BOTÃO DELETAR
+		
 
 		// ----------- Finalização dos Funcionamentos dos botões CRUD -----------
 

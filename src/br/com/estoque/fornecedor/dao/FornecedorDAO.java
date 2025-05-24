@@ -12,7 +12,7 @@ import br.com.estoque.fornecedor.model.Fornecedor;
 
 
 public class FornecedorDAO {
-	public void CadastrarProduto(Fornecedor fornecedor) throws SQLException {
+	public void CadastrarFornecedor(Fornecedor fornecedor) throws SQLException {
 		String sql = "INSERT INTO fornecedor(nome, cnpj) VALUES(?, ?)";
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -74,8 +74,8 @@ public class FornecedorDAO {
 		return fornecedores;
 	}
 
-	public void atualizarProduto(Fornecedor fornecedor) throws SQLException {
-		String sql = "UPDATE fornecedor SET nome = ?, cnpj = ?, " + "WHERE id = ?";
+	public void atualizarFornecedor(Fornecedor fornecedor) throws SQLException {
+		String sql = "UPDATE fornecedor SET nome = ?, cnpj = ? WHERE id = ?";
 		Connection conn = null;
 		PreparedStatement pstm = null;
 
@@ -101,7 +101,7 @@ public class FornecedorDAO {
 		}
 	}
 
-	public void deletarProduto(int id) throws SQLException {
+	public void deletarFornecedor(int id) throws SQLException {
 		String sql = "DELETE FROM fornecedor WHERE id = ?";
 		Connection conn = null;
 		PreparedStatement pstm = null;
