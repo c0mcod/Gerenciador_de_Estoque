@@ -13,7 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import br.com.estoque.controller.EstoqueController;
+import br.com.estoque.controller.EstoqueFornecedorController;
+import br.com.estoque.controller.EstoqueProdutoController;
 
 /*
  *Olá! Esse é um sistema de gerenciamento de estoque simples, mas como se trata
@@ -24,11 +25,12 @@ import br.com.estoque.controller.EstoqueController;
  * a exercitar boas práticas.
  */
 
-public class Interface extends EstoqueController{
+public class Interface {
 
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
-		EstoqueController EC = new EstoqueController();
+		EstoqueProdutoController PC = new EstoqueProdutoController();
+		EstoqueFornecedorController FP = new EstoqueFornecedorController();
 		
 		// Criação da janela principal
 		JFrame frameJanela = new JFrame();
@@ -60,7 +62,7 @@ public class Interface extends EstoqueController{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				EC.cadastrarProduto();
+				PC.gerenciarProduto();
 			}
 		});
 
@@ -68,7 +70,6 @@ public class Interface extends EstoqueController{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				EC.cadastrarProduto();
 				
 			}
 		});
