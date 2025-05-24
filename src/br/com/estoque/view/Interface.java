@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 import br.com.estoque.controller.EstoqueFornecedorController;
 import br.com.estoque.controller.EstoqueProdutoController;
+import br.com.estoque.controller.EstoqueVendaController;
 
 /*
  *Olá! Esse é um sistema de gerenciamento de estoque simples, mas como se trata
@@ -31,6 +32,7 @@ public class Interface {
 	public static void main(String[] args) {
 		EstoqueProdutoController PC = new EstoqueProdutoController();
 		EstoqueFornecedorController FC = new EstoqueFornecedorController();
+		EstoqueVendaController VC = new EstoqueVendaController();
 		
 		// Criação da janela principal
 		JFrame frameJanela = new JFrame();
@@ -73,7 +75,14 @@ public class Interface {
 				FC.gerenciarFornecedor();
 			}
 		});
-		
+
+		btnV.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					
+			}
+		});
 	
 		// ----------------- FINALIZAÇÃO DAS AÇÕES -----------------
 

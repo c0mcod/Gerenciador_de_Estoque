@@ -261,7 +261,6 @@ public class EstoqueProdutoController {
 
 			}
 		});
-		
 
 		// BOTÃO DELETAR
 		btnExcluir.addActionListener(new ActionListener() {
@@ -325,7 +324,6 @@ public class EstoqueProdutoController {
 				btnE.setVisible(true);
 			}
 		});
-		
 
 		// ----------- Finalização dos Funcionamentos dos botões CRUD -----------
 
