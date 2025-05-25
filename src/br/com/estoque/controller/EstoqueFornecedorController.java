@@ -1,8 +1,10 @@
 package br.com.estoque.controller;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,10 +21,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
@@ -30,10 +32,10 @@ import br.com.estoque.fornecedor.dao.FornecedorDAO;
 import br.com.estoque.fornecedor.model.Fornecedor;
 
 public class EstoqueFornecedorController {
-	static String[] colunas = { "ID", "Nome", "CNPJ" };
-	static DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
-	static JTable tabela = new JTable(modelo);
-	public static JScrollPane scroll = new JScrollPane(tabela);
+	String[] colunas = { "ID", "Nome", "CNPJ" };
+	DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+	JTable tabela = new JTable(modelo);
+	public JScrollPane scroll = new JScrollPane(tabela);
 
 	Fornecedor f = new Fornecedor();
 	Fornecedor FA = new Fornecedor();
@@ -54,6 +56,7 @@ public class EstoqueFornecedorController {
 		// criação da janela secundária de cadastro de produtos
 		JFrame frameCadastroFornecedor = new JFrame();
 		frameCadastroFornecedor.setSize(700, 500);
+		frameCadastroFornecedor.setLocationRelativeTo(null);
 		frameCadastroFornecedor.setTitle("Gerenciamento de fornecedor");
 		frameCadastroFornecedor.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -62,10 +65,30 @@ public class EstoqueFornecedorController {
 		painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
 		painelBotoes.setBorder(BorderFactory.createEmptyBorder(50, 20, 50, 20)); // padding
 
+		// ---------- Painel do titulo -------------
+		JPanel painelTitulo = new JPanel();
+		painelTitulo.setBackground(new Color(45, 69, 143));
+		JLabel titulo = new JLabel("Gerenciamento de Fornecedores");
+		titulo.setFont(new Font("Arial", Font.BOLD, 19));
+		titulo.setForeground(Color.WHITE);
+		painelTitulo.add(titulo);
+		painelTitulo.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+		// Criação e estilização dos botões de ação
 		JButton btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar.setBackground(new Color(39, 174, 96));
+		btnCadastrar.setForeground(Color.WHITE);
+		btnCadastrar.setFocusPainted(false);
+
 		JButton btnAtualizar = new JButton("Atualizar");
+		btnAtualizar.setBackground(new Color(5, 50, 84));
+		btnAtualizar.setForeground(Color.WHITE);
+		btnAtualizar.setFocusable(false);
+
 		JButton btnExcluir = new JButton("Excluir");
-		JButton btnBuscar = new JButton("Buscar");
+		btnExcluir.setBackground(new Color(177, 1, 4));
+		btnExcluir.setForeground(Color.WHITE);
+		btnExcluir.setFocusable(false);
 
 		painelBotoes.add(btnCadastrar);
 		painelBotoes.add(Box.createVerticalStrut(20));
@@ -73,19 +96,15 @@ public class EstoqueFornecedorController {
 		painelBotoes.add(Box.createVerticalStrut(20));
 		painelBotoes.add(btnExcluir);
 		painelBotoes.add(Box.createVerticalStrut(20));
-		painelBotoes.add(btnBuscar);
 
 		Dimension tamanhoButtons = new Dimension(190, 60);
 		btnCadastrar.setPreferredSize(tamanhoButtons);
 		btnAtualizar.setPreferredSize(tamanhoButtons);
 		btnExcluir.setPreferredSize(tamanhoButtons);
-		btnBuscar.setPreferredSize(tamanhoButtons);
 
-		// ----------- Divisão com JSplitPane -----------
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, painelBotoes);
-		splitPane.setDividerLocation(550);
-		splitPane.setEnabled(false);
-		splitPane.setDividerSize(2);
+		frameCadastroFornecedor.setLayout(new BorderLayout());
+		frameCadastroFornecedor.add(scroll, BorderLayout.CENTER);
+		frameCadastroFornecedor.add(painelBotoes, BorderLayout.EAST);
 
 		try {
 			atualizarTable();
@@ -323,8 +342,14 @@ public class EstoqueFornecedorController {
 			}
 		});
 		// ----------- Finalização dos Funcionamentos dos botões CRUD -----------
-
-		frameCadastroFornecedor.add(splitPane);
+		
+		tabela.setRowHeight(25);
+		tabela.setFont(new Font("Arial", Font.PLAIN, 12));
+		tabela.getTableHeader().setBackground(new Color(52, 152, 219));
+		tabela.getTableHeader().setForeground(Color.WHITE);
+		tabela.getTableHeader().setFocusable(false);
+		
+		frameCadastroFornecedor.add(painelTitulo, BorderLayout.NORTH);
 		frameCadastroFornecedor.setVisible(true);
 	}
 }

@@ -1,6 +1,8 @@
 package br.com.estoque.controller;
 
 import java.awt.BorderLayout;
+
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -8,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
+import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -18,20 +21,21 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import br.com.estoque.produto.dao.ProdutoDAO;
 import br.com.estoque.produto.model.Produto;
 
 public class EstoqueProdutoController {
-	static String[] colunas = { "ID", "Nome", "Preço", "Quantidade", "ID Fornecedor" };
-	static DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
-	static JTable tabela = new JTable(modelo);
-	public static JScrollPane scroll = new JScrollPane(tabela);
+	String[] colunas = { "ID", "Nome", "Preço", "Quantidade", "ID Fornecedor" };
+	DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+	JTable tabela = new JTable(modelo);
+
+	JScrollPane scroll = new JScrollPane(tabela);
 	ProdutoDAO daoP = new ProdutoDAO();
 	Produto p = new Produto();
 	Produto pA = new Produto();
@@ -52,17 +56,39 @@ public class EstoqueProdutoController {
 		JFrame frameCadastroProduto = new JFrame();
 		frameCadastroProduto.setSize(700, 500);
 		frameCadastroProduto.setTitle("Cadastro de produto");
+		frameCadastroProduto.setLocationRelativeTo(null);
 		frameCadastroProduto.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+		// ---------- Painel do titulo -------------
+		JPanel painelTitulo = new JPanel();
+		painelTitulo.setBackground(new Color(45, 69, 143));
+		JLabel titulo = new JLabel("Gerenciamento de Produtos");
+		titulo.setFont(new Font("Arial", Font.BOLD, 19));
+		titulo.setForeground(Color.WHITE);
+		painelTitulo.add(titulo);
+		painelTitulo.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 		// ----------- Painel dos botões (direita) -----------
 		JPanel painelBotoes = new JPanel();
 		painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
 		painelBotoes.setBorder(BorderFactory.createEmptyBorder(50, 20, 50, 20)); // padding
 
+		// Criação e estilização dos botões de ação
 		JButton btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar.setBackground(new Color(39, 174, 96));
+		btnCadastrar.setForeground(Color.WHITE);
+		btnCadastrar.setFocusPainted(false);
+
 		JButton btnAtualizar = new JButton("Atualizar");
+		btnAtualizar.setBackground(new Color(5, 50, 84));
+		btnAtualizar.setForeground(Color.WHITE);
+		btnAtualizar.setFocusable(false);
+
 		JButton btnExcluir = new JButton("Excluir");
-		JButton btnBuscar = new JButton("Buscar");
+		btnExcluir.setBackground(new Color(177, 1, 4));
+		btnExcluir.setForeground(Color.WHITE);
+		btnExcluir.setFocusable(false);
+
 
 		painelBotoes.add(btnCadastrar);
 		painelBotoes.add(Box.createVerticalStrut(20));
@@ -70,19 +96,15 @@ public class EstoqueProdutoController {
 		painelBotoes.add(Box.createVerticalStrut(20));
 		painelBotoes.add(btnExcluir);
 		painelBotoes.add(Box.createVerticalStrut(20));
-		painelBotoes.add(btnBuscar);
 
-		Dimension tamanhoButtons = new Dimension(190, 60);
+		Dimension tamanhoButtons = new Dimension(100, 0);
 		btnCadastrar.setPreferredSize(tamanhoButtons);
 		btnAtualizar.setPreferredSize(tamanhoButtons);
 		btnExcluir.setPreferredSize(tamanhoButtons);
-		btnBuscar.setPreferredSize(tamanhoButtons);
 
-		// ----------- Divisão com JSplitPane -----------
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, painelBotoes);
-		splitPane.setDividerLocation(550);
-		splitPane.setEnabled(false);
-		splitPane.setDividerSize(2);
+		frameCadastroProduto.setLayout(new BorderLayout());
+		frameCadastroProduto.add(scroll, BorderLayout.CENTER);
+		frameCadastroProduto.add(painelBotoes, BorderLayout.EAST);
 
 		try {
 			atualizarTable();
@@ -124,6 +146,7 @@ public class EstoqueProdutoController {
 				painelCampos.add(campoQuantidade);
 				painelCampos.add(labelIdFornecedor);
 				painelCampos.add(campoIdFornecedor);
+
 				// Painel para os botões
 				JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 				JButton enviarProduto = new JButton("Enviar");
@@ -209,6 +232,8 @@ public class EstoqueProdutoController {
 				painelCampos.add(campoIdFornecedor);
 				painelCampos.add(new JLabel("ID do Produto"));
 				painelCampos.add(campoId);
+				painelCampos.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
 
 				// Painel para os botões
 				JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -327,7 +352,13 @@ public class EstoqueProdutoController {
 
 		// ----------- Finalização dos Funcionamentos dos botões CRUD -----------
 
-		frameCadastroProduto.add(splitPane);
+		tabela.setRowHeight(25);
+		tabela.setFont(new Font("Arial", Font.PLAIN, 12));
+		tabela.getTableHeader().setBackground(new Color(52, 152, 219));
+		tabela.getTableHeader().setForeground(Color.WHITE);
+		tabela.getTableHeader().setFocusable(false);
+
+		frameCadastroProduto.add(painelTitulo, BorderLayout.NORTH);
 		frameCadastroProduto.setVisible(true);
 	}
 }

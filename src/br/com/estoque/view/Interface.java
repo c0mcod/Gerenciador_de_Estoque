@@ -13,9 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.formdev.flatlaf.FlatIntelliJLaf;
+
 import br.com.estoque.controller.EstoqueFornecedorController;
 import br.com.estoque.controller.EstoqueProdutoController;
-import br.com.estoque.controller.EstoqueVendaController;
 
 /*
  *Olá! Esse é um sistema de gerenciamento de estoque simples, mas como se trata
@@ -30,78 +31,99 @@ public class Interface {
 
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
-		EstoqueProdutoController PC = new EstoqueProdutoController();
-		EstoqueFornecedorController FC = new EstoqueFornecedorController();
-		EstoqueVendaController VC = new EstoqueVendaController();
-		
-		// Criação da janela principal
-		JFrame frameJanela = new JFrame();
-		frameJanela.setSize(700, 500);
-		frameJanela.setTitle("Gerenciador de Estoque");
-		frameJanela.setDefaultCloseOperation(frameJanela.EXIT_ON_CLOSE);
+		try {
+			FlatIntelliJLaf.setup(); // Aplica o tema "IntelliJ"
+		} catch (Exception ex) {
+			System.err.println("Falha ao iniciar FlatLaf");
+		}
 
-		// painel onde fica o titulo
-		JPanel painelTitulo = new JPanel();
-		painelTitulo.setBackground(new Color(230, 230, 250));
-		JLabel titulo = new JLabel("Sistema de Gerenciamento de Estoque");
-		titulo.setFont(new Font("Arial", Font.BOLD, 18));
-		painelTitulo.add(titulo);
-		painelTitulo.setBorder(new EmptyBorder(10, 10, 10, 10));
+		javax.swing.SwingUtilities.invokeLater(() -> {
+			EstoqueProdutoController PC = new EstoqueProdutoController();
+			EstoqueFornecedorController FC = new EstoqueFornecedorController();
 
-		// botões de ação
-		JButton btnP = new JButton("Gerencia de Produtos");
-		JButton btnF = new JButton("Gerencia de Fornecedores");
-		JButton btnV = new JButton("Vender");
+			// Criação da janela principal
+			JFrame frameJanela = new JFrame();
+			frameJanela.setSize(850, 600);
+			frameJanela.setTitle("Gerenciador de Estoque");
+			frameJanela.setDefaultCloseOperation(frameJanela.EXIT_ON_CLOSE);
+			frameJanela.setLocationRelativeTo(null);
 
-		// padronização dos botões
-		Dimension tamanhoBotao = new Dimension(160, 30);
-		btnP.setPreferredSize(tamanhoBotao);
-		btnF.setPreferredSize(tamanhoBotao);
-		btnV.setPreferredSize(tamanhoBotao);
+			// painel onde fica o titulo
+			JPanel painelTitulo = new JPanel();
+			painelTitulo.setBackground(new Color(45, 69, 143));
+			JLabel titulo = new JLabel("Sistema de Gerenciamento de Estoque");
+			titulo.setFont(new Font("Arial", Font.BOLD, 18));
+			titulo.setForeground(Color.WHITE);
+			painelTitulo.add(titulo);
+			painelTitulo.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-		// ----------------- DEFINIÇÃO DAS AÇÕES -----------------
-		btnP.addActionListener(new ActionListener() {
+			// botões de ação
+			JButton btnP = new JButton("Gerencia de Produtos");
+			btnP.setBackground(new Color(2, 38, 74));
+			btnP.setForeground(Color.WHITE);
+			btnP.setFocusable(false);
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				PC.gerenciarProduto();
-			}
+			JButton btnF = new JButton("Gerencia de Fornecedores");
+			btnF.setBackground(new Color(2, 38, 74));
+			btnF.setForeground(Color.WHITE);
+			btnF.setFocusable(false);
+
+			JButton btnV = new JButton("Vender");
+			btnV.setBackground(new Color(2, 38, 74));
+			btnV.setForeground(Color.WHITE);
+			btnV.setFocusable(false);
+
+			// padronização dos botões
+			Dimension tamanhoBotao = new Dimension(200, 30);
+			btnP.setPreferredSize(tamanhoBotao);
+			btnF.setPreferredSize(tamanhoBotao);
+			btnV.setPreferredSize(tamanhoBotao);
+
+			// ----------------- DEFINIÇÃO DAS AÇÕES -----------------
+			btnP.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					PC.gerenciarProduto();
+				}
+			});
+
+			btnF.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					FC.gerenciarFornecedor();
+				}
+			});
+
+			btnV.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+				}
+			});
+
+			// ----------------- FINALIZAÇÃO DAS AÇÕES -----------------
+
+			// Criação do painel inferior e organização dos botões
+			JPanel painelInferior = new JPanel();
+
+			painelInferior.add(btnP);
+			painelInferior.add(btnF);
+			painelInferior.add(btnV);
+
+			painelInferior.setBackground(new Color(221, 221, 221));
+
+			painelInferior.setBorder(new EmptyBorder(10, 0, 10, 0));
+
+			// Definição do layout e inserção dos componentes na janela principal
+			frameJanela.setLayout(new BorderLayout());
+			frameJanela.add(painelTitulo, BorderLayout.NORTH);
+			frameJanela.add(painelInferior, BorderLayout.SOUTH);
+
+			frameJanela.setVisible(true);
 		});
-
-		btnF.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				FC.gerenciarFornecedor();
-			}
-		});
-
-		btnV.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-					
-			}
-		});
-	
-		// ----------------- FINALIZAÇÃO DAS AÇÕES -----------------
-
-		// Criação do painel inferior e organização dos botões
-		JPanel painelInferior = new JPanel();
-
-		painelInferior.add(btnP);
-		painelInferior.add(btnF);
-		painelInferior.add(btnV);
-
-		painelInferior.setBorder(new EmptyBorder(10, 0, 10, 0));
-
-		// Definição do layout e inserção dos componentes na janela principal
-		frameJanela.setLayout(new BorderLayout());
-		frameJanela.add(painelTitulo, BorderLayout.NORTH);
-		frameJanela.add(painelInferior, BorderLayout.SOUTH);
-
-		frameJanela.setVisible(true);
-
 	}
 
 }
