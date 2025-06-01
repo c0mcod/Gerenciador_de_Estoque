@@ -6,10 +6,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -19,7 +21,6 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
  */
 import com.formdev.flatlaf.FlatLightLaf;
-
 
 import br.com.estoque.controller.EstoqueFornecedorController;
 import br.com.estoque.controller.EstoqueProdutoController;
@@ -41,7 +42,7 @@ public class Interface {
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 		try {
-			FlatLightLaf.setup(); 
+			FlatLightLaf.setup();
 		} catch (Exception ex) {
 			System.err.println("Falha ao iniciar FlatLaf");
 		}
@@ -85,7 +86,7 @@ public class Interface {
 			btnV.setForeground(Color.WHITE);
 			btnV.setFocusable(false);
 			btnV.setFont(new Font("Arial", Font.PLAIN, 14));
-			
+
 			// padronização dos botões
 			Dimension tamanhoBotao = new Dimension(230, 30);
 			btnP.setPreferredSize(tamanhoBotao);
@@ -132,7 +133,15 @@ public class Interface {
 			frameJanela.setLayout(new BorderLayout());
 			frameJanela.add(painelTitulo, BorderLayout.NORTH);
 			frameJanela.add(painelInferior, BorderLayout.SOUTH);
-			
+
+			try {
+				PainelGraficoEstoque painelGrafico = new PainelGraficoEstoque();
+				frameJanela.add(painelGrafico, BorderLayout.CENTER);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(frameJanela, "Erro ao carregar gráfico de estoque: " + e.getMessage());
+			}
+
 			frameJanela.setVisible(true);
 		});
 	}
