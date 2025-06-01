@@ -25,6 +25,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
@@ -79,16 +80,19 @@ public class EstoqueFornecedorController {
 		btnCadastrar.setBackground(new Color(39, 174, 96));
 		btnCadastrar.setForeground(Color.WHITE);
 		btnCadastrar.setFocusPainted(false);
+		btnCadastrar.setFont(new Font("Arial", Font.BOLD, 15));
 
 		JButton btnAtualizar = new JButton("Atualizar");
 		btnAtualizar.setBackground(new Color(5, 50, 84));
 		btnAtualizar.setForeground(Color.WHITE);
 		btnAtualizar.setFocusable(false);
+		btnAtualizar.setFont(new Font("Arial", Font.BOLD, 15));
 
 		JButton btnExcluir = new JButton("Excluir");
 		btnExcluir.setBackground(new Color(177, 1, 4));
 		btnExcluir.setForeground(Color.WHITE);
 		btnExcluir.setFocusable(false);
+		btnExcluir.setFont(new Font("Arial", Font.BOLD, 15));
 
 		painelBotoes.add(btnCadastrar);
 		painelBotoes.add(Box.createVerticalStrut(20));
@@ -348,6 +352,17 @@ public class EstoqueFornecedorController {
 		tabela.getTableHeader().setBackground(new Color(52, 152, 219));
 		tabela.getTableHeader().setForeground(Color.WHITE);
 		tabela.getTableHeader().setFocusable(false);
+		
+		tabela.setSelectionBackground(new Color(184, 207, 229)); 
+		tabela.setGridColor(new Color(220, 220, 220)); 
+
+		scroll.setBorder(BorderFactory.createTitledBorder(
+			    BorderFactory.createLineBorder(new Color(52, 152, 219), 2), 
+			    "Lista de Fornecedores",
+			    TitledBorder.LEFT,           
+			    TitledBorder.TOP,            
+			    new Font("Arial", Font.PLAIN, 16)      
+			));
 		
 		frameCadastroFornecedor.add(painelTitulo, BorderLayout.NORTH);
 		frameCadastroFornecedor.setVisible(true);

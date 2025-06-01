@@ -13,10 +13,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+//import com.formdev.flatlaf.FlatDarculaLaf;
+/*
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+ */
+import com.formdev.flatlaf.FlatLightLaf;
+
 
 import br.com.estoque.controller.EstoqueFornecedorController;
 import br.com.estoque.controller.EstoqueProdutoController;
+import br.com.estoque.controller.EstoqueVendaController;
 
 /*
  *Olá! Esse é um sistema de gerenciamento de estoque simples, mas como se trata
@@ -25,6 +32,8 @@ import br.com.estoque.controller.EstoqueProdutoController;
  *
  * Cada método terá um comentário para mostrar o seu funcionamento, além de me ajudar
  * a exercitar boas práticas.
+ * 
+ * 
  */
 
 public class Interface {
@@ -32,7 +41,7 @@ public class Interface {
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 		try {
-			FlatIntelliJLaf.setup(); // Aplica o tema "IntelliJ"
+			FlatLightLaf.setup(); 
 		} catch (Exception ex) {
 			System.err.println("Falha ao iniciar FlatLaf");
 		}
@@ -40,6 +49,7 @@ public class Interface {
 		javax.swing.SwingUtilities.invokeLater(() -> {
 			EstoqueProdutoController PC = new EstoqueProdutoController();
 			EstoqueFornecedorController FC = new EstoqueFornecedorController();
+			EstoqueVendaController VC = new EstoqueVendaController();
 
 			// Criação da janela principal
 			JFrame frameJanela = new JFrame();
@@ -62,19 +72,22 @@ public class Interface {
 			btnP.setBackground(new Color(2, 38, 74));
 			btnP.setForeground(Color.WHITE);
 			btnP.setFocusable(false);
+			btnP.setFont(new Font("Arial", Font.PLAIN, 14));
 
 			JButton btnF = new JButton("Gerencia de Fornecedores");
 			btnF.setBackground(new Color(2, 38, 74));
 			btnF.setForeground(Color.WHITE);
 			btnF.setFocusable(false);
+			btnF.setFont(new Font("Arial", Font.PLAIN, 14));
 
 			JButton btnV = new JButton("Vender");
 			btnV.setBackground(new Color(2, 38, 74));
 			btnV.setForeground(Color.WHITE);
 			btnV.setFocusable(false);
-
+			btnV.setFont(new Font("Arial", Font.PLAIN, 14));
+			
 			// padronização dos botões
-			Dimension tamanhoBotao = new Dimension(200, 30);
+			Dimension tamanhoBotao = new Dimension(230, 30);
 			btnP.setPreferredSize(tamanhoBotao);
 			btnF.setPreferredSize(tamanhoBotao);
 			btnV.setPreferredSize(tamanhoBotao);
@@ -100,7 +113,7 @@ public class Interface {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-
+					VC.realizarVenda();
 				}
 			});
 
@@ -113,15 +126,13 @@ public class Interface {
 			painelInferior.add(btnF);
 			painelInferior.add(btnV);
 
-			painelInferior.setBackground(new Color(221, 221, 221));
-
 			painelInferior.setBorder(new EmptyBorder(10, 0, 10, 0));
 
 			// Definição do layout e inserção dos componentes na janela principal
 			frameJanela.setLayout(new BorderLayout());
 			frameJanela.add(painelTitulo, BorderLayout.NORTH);
 			frameJanela.add(painelInferior, BorderLayout.SOUTH);
-
+			
 			frameJanela.setVisible(true);
 		});
 	}

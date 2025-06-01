@@ -23,9 +23,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 import br.com.estoque.produto.dao.ProdutoDAO;
 import br.com.estoque.produto.model.Produto;
@@ -71,23 +74,32 @@ public class EstoqueProdutoController {
 		// ----------- Painel dos botões (direita) -----------
 		JPanel painelBotoes = new JPanel();
 		painelBotoes.setLayout(new BoxLayout(painelBotoes, BoxLayout.Y_AXIS));
-		painelBotoes.setBorder(BorderFactory.createEmptyBorder(50, 20, 50, 20)); // padding
+		painelBotoes.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // padding
+		
+		JLabel tituloAcoes = new JLabel("Ações");
+		tituloAcoes.setFont(new Font("Arial", Font.BOLD, 14));
+		painelBotoes.add(tituloAcoes);
+		painelBotoes.add(Box.createVerticalStrut(10));
 
 		// Criação e estilização dos botões de ação
 		JButton btnCadastrar = new JButton("Cadastrar");
 		btnCadastrar.setBackground(new Color(39, 174, 96));
 		btnCadastrar.setForeground(Color.WHITE);
 		btnCadastrar.setFocusPainted(false);
+		btnCadastrar.setFont(new Font("Arial", Font.BOLD, 15));
 
 		JButton btnAtualizar = new JButton("Atualizar");
 		btnAtualizar.setBackground(new Color(5, 50, 84));
 		btnAtualizar.setForeground(Color.WHITE);
 		btnAtualizar.setFocusable(false);
+		btnAtualizar.setFont(new Font("Arial", Font.BOLD, 15));
+		
 
 		JButton btnExcluir = new JButton("Excluir");
 		btnExcluir.setBackground(new Color(177, 1, 4));
 		btnExcluir.setForeground(Color.WHITE);
 		btnExcluir.setFocusable(false);
+		btnExcluir.setFont(new Font("Arial", Font.BOLD, 15));
 
 
 		painelBotoes.add(btnCadastrar);
@@ -97,7 +109,7 @@ public class EstoqueProdutoController {
 		painelBotoes.add(btnExcluir);
 		painelBotoes.add(Box.createVerticalStrut(20));
 
-		Dimension tamanhoButtons = new Dimension(100, 0);
+		Dimension tamanhoButtons = new Dimension(120, 50);
 		btnCadastrar.setPreferredSize(tamanhoButtons);
 		btnAtualizar.setPreferredSize(tamanhoButtons);
 		btnExcluir.setPreferredSize(tamanhoButtons);
@@ -236,9 +248,11 @@ public class EstoqueProdutoController {
 
 
 				// Painel para os botões
+				
 				JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 				JButton atualizarProduto = new JButton("Atualizar");
 				JButton cancelarProduto = new JButton("Cancelar");
+				
 
 				cancelarProduto.addActionListener(_ -> btnA.dispose());
 
@@ -350,6 +364,41 @@ public class EstoqueProdutoController {
 			}
 		});
 
+		// Busca por nome na tabela
+		JPanel painelBusca = new JPanel();
+		TableRowSorter<DefaultTableModel> sorter;
+        sorter = new TableRowSorter<>(modelo);
+        tabela.setRowSorter(sorter);
+
+        // Campo de filtro
+        JLabel labelBusca = new JLabel("Buscar"); 
+        JTextField campoFiltro = new JTextField(40);
+        
+        painelBusca.add(labelBusca);
+        painelBusca.add(campoFiltro);
+        
+
+        // Adiciona evento para filtrar conforme digita
+        campoFiltro.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                filtrar();
+            }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                filtrar();
+            }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                filtrar();
+            }
+
+            private void filtrar() {
+                String texto = campoFiltro.getText();
+                if (texto.length() == 0) {
+                    sorter.setRowFilter(null);
+                } else {
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto, 1));
+                }
+            }
+        });
 		// ----------- Finalização dos Funcionamentos dos botões CRUD -----------
 
 		tabela.setRowHeight(25);
@@ -357,8 +406,20 @@ public class EstoqueProdutoController {
 		tabela.getTableHeader().setBackground(new Color(52, 152, 219));
 		tabela.getTableHeader().setForeground(Color.WHITE);
 		tabela.getTableHeader().setFocusable(false);
+		tabela.setSelectionBackground(new Color(184, 207, 229)); 
+		tabela.setGridColor(new Color(220, 220, 220)); 
 
+		scroll.setBorder(BorderFactory.createTitledBorder(
+			    BorderFactory.createLineBorder(new Color(52, 152, 219), 2), 
+			    "Lista de Produtos",
+			    TitledBorder.LEFT,           
+			    TitledBorder.TOP,            
+			    new Font("Arial", Font.PLAIN, 16)      
+			));
+		
 		frameCadastroProduto.add(painelTitulo, BorderLayout.NORTH);
+		frameCadastroProduto.add(painelBusca, BorderLayout.NORTH);
+		
 		frameCadastroProduto.setVisible(true);
 	}
 }

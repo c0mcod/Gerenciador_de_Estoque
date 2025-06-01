@@ -46,5 +46,9 @@ public class Produto {
 	public void setQuantidade(int quantidade) {
 		this.quantidade = quantidade;
 	}
+	
+	public String toString() {
+        return "Produto id= " + id + "\nnome=" + nome + "\nquantidade=" + quantidade + "\npreco=" + preco + "\nid_fornecedor=" + id_fornecedor;
+    }
 
 }
