@@ -11,63 +11,89 @@ import br.com.estoque.produto.model.Produto;
 
 import javax.swing.*;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.sql.SQLException;
 import java.util.List;
 
 public class PainelGraficoEstoque extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public PainelGraficoEstoque() throws SQLException {
 		ProdutoDAO dao = new ProdutoDAO();
 		List<Produto> lista = dao.getProdutos();
-		setLayout(new GridLayout(1, 2));
+		setLayout(new BorderLayout(10, 10)); // espaçamento entre regiões
 
-		// Ordenando a lista dos 5 primeiros produtos em ordem crescente
+		// Ordena e limita os 5 produtos
 		lista.sort((p1, p2) -> Integer.compare(p2.getQuantidade(), p1.getQuantidade()));
-
-		// Limita aos 5 primeiros
 		List<Produto> top5 = lista.stream().limit(5).toList();
 
-		// Cria os dois datasets
+		// Cria os datasets
 		DefaultPieDataset datasetPizza = new DefaultPieDataset();
 		DefaultCategoryDataset datasetBarra = new DefaultCategoryDataset();
 
-		// Preenche os dados do gráfico de pizza
 		for (Produto p : top5) {
 			datasetPizza.setValue(p.getNome(), p.getQuantidade());
 			datasetBarra.addValue(p.getQuantidade(), "Quantidade", p.getNome());
 		}
 
 		// Cria os gráficos
-
-		// ---------- GRAFICO PIZZA ----------
 		JFreeChart graficoPizza = ChartFactory.createPieChart("Estoque por Produto", datasetPizza, true, true, false);
-		JFreeChart chartPizza = ChartFactory.createPieChart("Estoque - Pizza", datasetPizza);
-		ChartPanel panelPizza = new ChartPanel(chartPizza);
-		add(panelPizza);
-		panelPizza.setPreferredSize(new Dimension(100, 200));
+		JFreeChart graficoBarra = ChartFactory.createBarChart("Estoque - Barras", "Produto", "Quantidade", datasetBarra);
 
-		// ---------- GRAFICO BARRA ----------
-		JFreeChart graficoBarra = ChartFactory.createBarChart("Gráfico de Barras - Estoque", "Produto", "Quantidade",
-				datasetBarra);
-		JFreeChart chartBar = ChartFactory.createBarChart("Estoque - Barras", "Produto", "Qtd", datasetBarra);
-		ChartPanel panelBar = new ChartPanel(chartBar);
-		add(panelBar);
-		panelBar.setPreferredSize(new Dimension(100, 200));
-
-		// Cria os painéis para cada gráfico
 		ChartPanel painelPizza = new ChartPanel(graficoPizza);
 		ChartPanel painelBarra = new ChartPanel(graficoBarra);
 
-		// Painel principal com GridLayout 1 linha, 2 colunas
-		JPanel painelGraficos = new JPanel(new GridLayout(1, 2));
+		painelPizza.setPreferredSize(new Dimension(300, 200));
+		painelBarra.setPreferredSize(new Dimension(300, 200));
+
+		// ---------------- PAINEL DE CARDS ----------------
+		JPanel painelCards = new JPanel(new GridLayout(1, 3, 10, 10));
+
+		// Card 1 (Quantidade em estoque geral)
+		int estoqueTotal = dao.cardKPIEstoqueTotal();
+		JPanel card1 = criarCard("Estoque Total", "" + estoqueTotal);
+
+		// Card 2 (Quantidade de vendas)
+		String MenorEstoque = dao.cardKPIMenorEmEstoque();
+		JPanel card2 = criarCard("Menor quantidade em estoque", "" + MenorEstoque);
+
+		// Card 3 (Produto em menor quantidade em estoque)
+		JPanel card3 = criarCard("Numéro total de vendas", "Mais um valor");
+
+		painelCards.add(card1);
+		painelCards.add(card2);
+		painelCards.add(card3);
+
+		// ---------------- PAINEL DE GRÁFICOS ----------------
+		JPanel painelGraficos = new JPanel(new GridLayout(1, 2, 10, 10));
 		painelGraficos.add(painelPizza);
 		painelGraficos.add(painelBarra);
+
+		// ---------------- ADICIONANDO AOS REGIÕES ----------------
+		add(painelCards, BorderLayout.NORTH);
+		add(painelGraficos, BorderLayout.CENTER);
+
+		// Margens externas 
+		setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+	}
+
+	private JPanel criarCard(String titulo, String valor) {
+		JPanel card = new JPanel();
+		card.setBackground(new Color(230, 230, 250));
+		card.setBorder(BorderFactory.createTitledBorder(titulo));
+		card.setLayout(new BorderLayout());
+
+		JLabel label = new JLabel(valor);
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setFont(new Font("Arial", Font.BOLD, 16));
+
+		card.add(label, BorderLayout.CENTER);
+		return card;
 	}
 }
+

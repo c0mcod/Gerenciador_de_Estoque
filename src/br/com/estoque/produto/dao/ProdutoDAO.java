@@ -130,33 +130,68 @@ public class ProdutoDAO {
 	}
 
 	public Produto buscarUmPorId(int id) {
-	    String sql = "SELECT * FROM produto WHERE id = ?";
-	    Produto produto = null;
+		String sql = "SELECT * FROM produto WHERE id = ?";
+		Produto produto = null;
 
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rset = null;
+
+		try {
+			conn = ConnectionFactory.createConnectionToMySQL();
+			pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, id);
+
+			rset = pstm.executeQuery();
+
+			while (rset.next()) {
+				produto = new Produto();
+				produto.setId(rset.getInt("id"));
+				produto.setNome(rset.getString("nome"));
+				produto.setQuantidade(rset.getInt("quantidade"));
+				produto.setPreco(rset.getString("preco"));
+				produto.setId_fornecedor(rset.getInt("id_fornecedor"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rset != null)
+					rset.close();
+				if (pstm != null)
+					pstm.close();
+				if (conn != null)
+					conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return produto;
+	}
+	
+	public int cardKPIEstoqueTotal() {
+	    String sql = "SELECT SUM(quantidade) FROM produto";
 	    Connection conn = null;
 	    PreparedStatement pstm = null;
-	    ResultSet rset = null;
+	    ResultSet rs = null;
+	    int totalQuantidade = 0;
 
 	    try {
 	        conn = ConnectionFactory.createConnectionToMySQL();
 	        pstm = conn.prepareStatement(sql);
-	        pstm.setInt(1, id); 
+	        rs = pstm.executeQuery();
 
-	        rset = pstm.executeQuery();
-
-	        while (rset.next()) {
-	            produto = new Produto();
-	            produto.setId(rset.getInt("id"));
-	            produto.setNome(rset.getString("nome"));
-	            produto.setQuantidade(rset.getInt("quantidade"));
-	            produto.setPreco(rset.getString("preco"));
-	            produto.setId_fornecedor(rset.getInt("id_fornecedor"));
+	        if (rs.next()) {
+	            totalQuantidade = rs.getInt(1); 
 	        }
+
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    } finally {
+	        // sempre feche os recursos
 	        try {
-	            if (rset != null) rset.close();
+	            if (rs != null) rs.close();
 	            if (pstm != null) pstm.close();
 	            if (conn != null) conn.close();
 	        } catch (Exception e) {
@@ -164,7 +199,41 @@ public class ProdutoDAO {
 	        }
 	    }
 
-	    return produto;
+	    return totalQuantidade;
 	}
+
+	public String cardKPIMenorEmEstoque() {
+	    String sql = "SELECT nome, quantidade FROM produto WHERE quantidade = (SELECT MIN(quantidade) FROM produto)";
+	    Connection conn = null;
+	    PreparedStatement pstm = null;
+	    ResultSet rs = null;
+	    String resultado = "";
+
+	    try {
+	        conn = ConnectionFactory.createConnectionToMySQL();
+	        pstm = conn.prepareStatement(sql);
+	        rs = pstm.executeQuery();
+
+	        if (rs.next()) {
+	            String nome = rs.getString("nome");
+	            int quantidade = rs.getInt("quantidade");
+	            resultado = nome + " - " + quantidade + " unidades";
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstm != null) pstm.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return resultado;
+	}
+
 
 }
