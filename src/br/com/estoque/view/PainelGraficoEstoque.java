@@ -96,4 +96,3 @@ public class PainelGraficoEstoque extends JPanel {
 		return card;
 	}
 }
-
