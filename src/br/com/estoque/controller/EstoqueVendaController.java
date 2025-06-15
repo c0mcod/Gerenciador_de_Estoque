@@ -11,6 +11,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+
+import br.com.estoque.vendas.controller.FinalVenda;
+import br.com.estoque.vendas.controller.ItemVenda;
+import br.com.estoque.vendas.controller.SalvarVendasCSV;
+import java.util.List;
 
 public class EstoqueVendaController {
 
@@ -21,7 +27,13 @@ public class EstoqueVendaController {
 	JScrollPane scroll = new JScrollPane(tabela);
 	ProdutoDAO daoP = new ProdutoDAO();
 	Produto p = new Produto();
+	
+	List<ItemVenda> itensDaVenda = new ArrayList<>();
+	SalvarVendasCSV svCSV = new SalvarVendasCSV();
+	
+	
 
+	@SuppressWarnings("serial")
 	public void realizarVenda() {
 		JFrame janelaPrincipal = new JFrame();
 		janelaPrincipal.setTitle("CAIXA ABERTO");
@@ -214,7 +226,7 @@ public class EstoqueVendaController {
 		tabela.getTableHeader().setForeground(Color.WHITE);
 		tabela.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
 
-		// Selecionar última linha (corrigido)
+		// Selecionar última linha
 		tabela.setSelectionBackground(azulSecundario);
 		tabela.setSelectionForeground(Color.WHITE);
 		if (tabela.getRowCount() > 0) {
@@ -262,6 +274,17 @@ public class EstoqueVendaController {
 		troco.setForeground(azulPrincipal);
 		painelTroco.add(troco);
 		painelInferior.add(painelTroco);
+		
+		painelPrincipal.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+		      .put(KeyStroke.getKeyStroke("F9"), "abrirTela");
+
+		painelPrincipal.getActionMap().put("abrirTela", new AbstractAction() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        new FinalVenda(); 
+		    }
+		});
+
 
 		// -------------------- OPERAÇÕES DE VENDA --------------------
 		// Inicialmente um teste, quero ver se manualmente um produto consegue ser
@@ -286,6 +309,7 @@ public class EstoqueVendaController {
 							String.format("R$ %.2f", precoUnitLabel), String.format("R$ %.2f", total) };
 
 					modelo.addRow(row);
+					
 
 					totalItem.setText(String.format("R$ %.2f", total));
 					codigo.setText(campoCodigoBd);
@@ -298,11 +322,34 @@ public class EstoqueVendaController {
 						double valor = Double.parseDouble(valorStr);
 						subtotal += valor;
 					}
+					
+
 
 					// Atualiza label
 					subtotalLabel.setText(String.format("R$ %.2f", subtotal));
 
 					nomeItem.setText(nomeProduto);
+					
+					/*
+					 * ItemVenda item = new ItemVenda(
+							campoCodigoBdInt,
+							nomeProduto,
+							campoQuantidadeInt,
+							precoUnitLabel,
+							total
+							);
+					itensDaVenda.add(item);
+					
+					double valorTotal = 0.0;
+					for (ItemVenda item1 : itensDaVenda) {
+					    valorTotal += item1.getTotal();
+					}
+
+					Venda venda = new Venda(itensDaVenda, valorTotal);
+
+					svCSV.salvarVendaCSV(venda);
+					 */
+					
 
 				} catch (Exception e1) {
 					e1.printStackTrace();
