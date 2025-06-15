@@ -98,7 +98,8 @@ public class PainelGraficoEstoque extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
     }
 
-    private void configurarGraficoPizza(JFreeChart graficoPizza, DefaultPieDataset dataset) {
+    @SuppressWarnings("rawtypes")
+	private void configurarGraficoPizza(JFreeChart graficoPizza, DefaultPieDataset dataset) {
         PiePlot plotPizza = (PiePlot) graficoPizza.getPlot();
         plotPizza.setBackgroundPaint(Color.WHITE);
         plotPizza.setOutlineVisible(false);
@@ -142,7 +143,8 @@ public class PainelGraficoEstoque extends JPanel {
     }
 
     private JPanel criarCardModerno(String titulo, String valor, Color corPrincipal, String emoji) {
-        JPanel card = new JPanel() {
+        @SuppressWarnings("serial")
+		JPanel card = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -195,7 +197,8 @@ public class PainelGraficoEstoque extends JPanel {
         return card;
     }
 
-    private JPanel criarContainerGrafico(ChartPanel chartPanel) {
+    @SuppressWarnings("serial")
+	private JPanel criarContainerGrafico(ChartPanel chartPanel) {
         JPanel container = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {

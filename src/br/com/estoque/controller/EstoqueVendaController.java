@@ -9,8 +9,8 @@ import br.com.estoque.produto.model.Produto;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.List;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class EstoqueVendaController {
 
@@ -76,6 +76,7 @@ public class EstoqueVendaController {
 		painelCodBarras.add(campoCodigo);
 		painelEsquerdo.add(painelCodBarras);
 
+
 		// Painel para o botão adicionar
 		JPanel painelBotao = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
 		painelBotao.setBackground(Color.WHITE);
@@ -100,6 +101,19 @@ public class EstoqueVendaController {
 			public void mouseExited(java.awt.event.MouseEvent evt) {
 				adc.setBackground(new Color(40, 167, 69)); // Volta para a cor original
 			}
+		});
+		
+		// Ativar com tecla "Enter"
+		campoCodigo.addKeyListener(new KeyAdapter() {
+		    @Override
+		    public void keyPressed(KeyEvent e) {
+		        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+		            adc.doClick(); 
+		            campoCodigo.setText("");
+		            campoQtd.setText("");
+		            campoQtd.requestFocus();
+		        }
+		    }
 		});
 
 		// Definir tamanho preferido
@@ -132,6 +146,17 @@ public class EstoqueVendaController {
 		totalItem.setFont(new Font("Arial", Font.BOLD, 18));
 		painelTotalItem.add(totalItem);
 		painelEsquerdo.add(painelTotalItem);
+
+		painelEsquerdo.add(Box.createVerticalStrut(20));
+
+		// Nome do item
+		JPanel painelNomeItem = new JPanel(new BorderLayout());
+		painelNomeItem.setBorder(BorderFactory.createTitledBorder("NOME DO ITEM"));
+		painelNomeItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+		JLabel nomeItem = new JLabel(" ", SwingConstants.CENTER);
+		nomeItem.setFont(new Font("Arial", Font.BOLD, 18));
+		painelNomeItem.add(nomeItem);
+		painelEsquerdo.add(painelNomeItem);
 
 		painelEsquerdo.add(Box.createVerticalStrut(20));
 
@@ -227,7 +252,6 @@ public class EstoqueVendaController {
 		totalRecebido.setForeground(azulPrincipal);
 		painelTotalRecebido.add(totalRecebido);
 		painelInferior.add(painelTotalRecebido);
-		
 
 		// Troco
 		JPanel painelTroco = new JPanel(new BorderLayout());
@@ -262,23 +286,24 @@ public class EstoqueVendaController {
 							String.format("R$ %.2f", precoUnitLabel), String.format("R$ %.2f", total) };
 
 					modelo.addRow(row);
-					
+
 					totalItem.setText(String.format("R$ %.2f", total));
 					codigo.setText(campoCodigoBd);
-					
+
 					// Calcular subtotal
 					double subtotal = 0.0;
 					for (int i = 0; i < modelo.getRowCount(); i++) {
-					    String valorStr = modelo.getValueAt(i, 4).toString();
-					    valorStr = valorStr.replace("R$ ", "").replace(",", ".");
-					    double valor = Double.parseDouble(valorStr);
-					    subtotal += valor;
+						String valorStr = modelo.getValueAt(i, 4).toString();
+						valorStr = valorStr.replace("R$ ", "").replace(",", ".");
+						double valor = Double.parseDouble(valorStr);
+						subtotal += valor;
 					}
 
 					// Atualiza label
 					subtotalLabel.setText(String.format("R$ %.2f", subtotal));
-					
-					
+
+					nomeItem.setText(nomeProduto);
+
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
