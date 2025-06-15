@@ -22,7 +22,6 @@ public class EstoqueVendaController {
 	ProdutoDAO daoP = new ProdutoDAO();
 	Produto p = new Produto();
 
-
 	public void realizarVenda() {
 		JFrame janelaPrincipal = new JFrame();
 		janelaPrincipal.setTitle("CAIXA ABERTO");
@@ -76,8 +75,41 @@ public class EstoqueVendaController {
 		campoCodigo.setFont(new Font("Arial", Font.PLAIN, 16));
 		painelCodBarras.add(campoCodigo);
 		painelEsquerdo.add(painelCodBarras);
-		JButton adc = new JButton("add");
-		painelEsquerdo.add(adc);
+
+		// Painel para o botão adicionar
+		JPanel painelBotao = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
+		painelBotao.setBackground(Color.WHITE);
+		painelBotao.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+
+		JButton adc = new JButton("ADICIONAR PRODUTO");
+		adc.setBackground(new Color(40, 167, 69)); // Verde mais moderno
+		adc.setForeground(Color.WHITE);
+		adc.setFocusable(false);
+		adc.setFont(new Font("Arial", Font.BOLD, 14));
+		adc.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		adc.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+		// Efeito hover
+		adc.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseEntered(java.awt.event.MouseEvent evt) {
+				adc.setBackground(new Color(34, 139, 58)); // Verde mais escuro no hover
+			}
+
+			@Override
+			public void mouseExited(java.awt.event.MouseEvent evt) {
+				adc.setBackground(new Color(40, 167, 69)); // Volta para a cor original
+			}
+		});
+
+		// Definir tamanho preferido
+		adc.setPreferredSize(new Dimension(300, 40));
+
+		painelBotao.add(adc);
+		painelEsquerdo.add(painelBotao);
+
+		// Adicionar um espaçamento após o botão
+		painelEsquerdo.add(Box.createVerticalStrut(15));
 
 		painelEsquerdo.add(Box.createVerticalStrut(20));
 
@@ -96,7 +128,7 @@ public class EstoqueVendaController {
 		JPanel painelTotalItem = new JPanel(new BorderLayout());
 		painelTotalItem.setBorder(BorderFactory.createTitledBorder("TOTAL DO ITEM"));
 		painelTotalItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-		JLabel totalItem = new JLabel("R$ 0,00", SwingConstants.CENTER);
+		JLabel totalItem = new JLabel(" ", SwingConstants.CENTER);
 		totalItem.setFont(new Font("Arial", Font.BOLD, 18));
 		painelTotalItem.add(totalItem);
 		painelEsquerdo.add(painelTotalItem);
@@ -180,21 +212,22 @@ public class EstoqueVendaController {
 		JPanel painelSubtotal = new JPanel(new BorderLayout());
 		painelSubtotal.setBorder(
 				BorderFactory.createTitledBorder(BorderFactory.createLineBorder(azulPrincipal, 2), "SUBTOTAL"));
-		JLabel subtotal = new JLabel("110,45", SwingConstants.CENTER);
-		subtotal.setFont(new Font("Arial", Font.BOLD, 32));
-		subtotal.setForeground(azulPrincipal);
-		painelSubtotal.add(subtotal);
+		JLabel subtotalLabel = new JLabel("", SwingConstants.CENTER);
+		subtotalLabel.setFont(new Font("Arial", Font.BOLD, 32));
+		subtotalLabel.setForeground(azulPrincipal);
+		painelSubtotal.add(subtotalLabel);
 		painelInferior.add(painelSubtotal);
 
 		// Total recebido
 		JPanel painelTotalRecebido = new JPanel(new BorderLayout());
 		painelTotalRecebido.setBorder(
 				BorderFactory.createTitledBorder(BorderFactory.createLineBorder(azulPrincipal, 2), "TOTAL RECEBIDO"));
-		JLabel totalRecebido = new JLabel("R$ 110,45", SwingConstants.CENTER);
+		JLabel totalRecebido = new JLabel("", SwingConstants.CENTER);
 		totalRecebido.setFont(new Font("Arial", Font.BOLD, 24));
 		totalRecebido.setForeground(azulPrincipal);
 		painelTotalRecebido.add(totalRecebido);
 		painelInferior.add(painelTotalRecebido);
+		
 
 		// Troco
 		JPanel painelTroco = new JPanel(new BorderLayout());
@@ -210,36 +243,46 @@ public class EstoqueVendaController {
 		// Inicialmente um teste, quero ver se manualmente um produto consegue ser
 		// adiconado pelo id
 		adc.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String campoQuantidade = campoQtd.getText();
 				String campoCodigoBd = campoCodigo.getText();
 				int campoCodigoBdInt = Integer.parseInt(campoCodigoBd);
-				int campoQuantidadeInt = Integer.parseInt(campoCodigoBd);
+				int campoQuantidadeInt = Integer.parseInt(campoQuantidade);
 
 				try {
 					double total = daoP.calcularValorVenda(campoCodigoBdInt, campoQuantidadeInt);
-					double precoUnitLabel = total/campoQuantidadeInt;
-					
-					String nomeProduto = daoP.exibirNome(campoQuantidadeInt);
-					valorUnit.setText(String.format("R$ %.2f", precoUnitLabel));
-					
-					  Object[] row = {
-				                campoCodigoBdInt,
-				                nomeProduto,
-				                campoQuantidadeInt,
-				                String.format("R$ %.2f", precoUnitLabel),
-				                String.format("R$ %.2f", total)
-				            };
+					double precoUnitLabel = total / campoQuantidadeInt;
 
-				            modelo.addRow(row);
+					String nomeProduto = daoP.exibirNome(campoCodigoBdInt);
+					valorUnit.setText(String.format("R$ %.2f", precoUnitLabel));
+
+					Object[] row = { campoCodigoBdInt, nomeProduto, campoQuantidadeInt,
+							String.format("R$ %.2f", precoUnitLabel), String.format("R$ %.2f", total) };
+
+					modelo.addRow(row);
+					
+					totalItem.setText(String.format("R$ %.2f", total));
+					codigo.setText(campoCodigoBd);
+					
+					// Calcular subtotal
+					double subtotal = 0.0;
+					for (int i = 0; i < modelo.getRowCount(); i++) {
+					    String valorStr = modelo.getValueAt(i, 4).toString();
+					    valorStr = valorStr.replace("R$ ", "").replace(",", ".");
+					    double valor = Double.parseDouble(valorStr);
+					    subtotal += valor;
+					}
+
+					// Atualiza label
+					subtotalLabel.setText(String.format("R$ %.2f", subtotal));
+					
+					
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-			
 
-				
 			}
 		});
 
