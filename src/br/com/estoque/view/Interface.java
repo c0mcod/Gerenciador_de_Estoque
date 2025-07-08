@@ -134,7 +134,7 @@ public class Interface {
             frameJanela.add(painelTitulo, BorderLayout.NORTH);
             frameJanela.add(painelInferior, BorderLayout.SOUTH);
 
-            // Instanciando a classe de gráficos
+            //  Instanciando a classe de gráficos
             try {
                 PainelGraficoEstoque painelGrafico = new PainelGraficoEstoque();
                 frameJanela.add(painelGrafico, BorderLayout.CENTER);
