@@ -1,5 +1,17 @@
+# Arquivos gerados automaticamente
+*.class
 *.log
-src/br/com/estoque/connection/ConnectionFactory.java
+*.csv
+
+# Pastas de build
+/bin/
+/target/
+
+# Configurações do Eclipse/IDEA
 .classpath
 .project
-crud_GerenciadorDeEstoque.iml
+.settings/
+*.iml
+.idea/
+ 
+ 
