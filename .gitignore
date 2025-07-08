@@ -1,2 +1,5 @@
 *.log
 src/br/com/estoque/connection/ConnectionFactory.java
+.classpath
+.project
+crud_GerenciadorDeEstoque.iml
