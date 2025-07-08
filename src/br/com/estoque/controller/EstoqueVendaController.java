@@ -13,9 +13,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import br.com.estoque.vendas.controller.FinalVenda;
 import br.com.estoque.vendas.controller.ItemVenda;
-import br.com.estoque.vendas.controller.SalvarVendasCSV;
+import br.com.estoque.vendas.controller.Venda;
+
 import java.util.List;
 
 public class EstoqueVendaController {
@@ -27,12 +27,9 @@ public class EstoqueVendaController {
 	JScrollPane scroll = new JScrollPane(tabela);
 	ProdutoDAO daoP = new ProdutoDAO();
 	Produto p = new Produto();
-	
-	List<ItemVenda> itensDaVenda = new ArrayList<>();
-	SalvarVendasCSV svCSV = new SalvarVendasCSV();
-	
-	
 
+	List<ItemVenda> itensDaVenda = new ArrayList<>();
+	
 	@SuppressWarnings("serial")
 	public void realizarVenda() {
 		JFrame janelaPrincipal = new JFrame();
@@ -88,11 +85,9 @@ public class EstoqueVendaController {
 		painelCodBarras.add(campoCodigo);
 		painelEsquerdo.add(painelCodBarras);
 
-
 		// Painel para o botão adicionar
-		JPanel painelBotao = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
+		JPanel painelBotao = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0)); // 10px de espaço horizontal
 		painelBotao.setBackground(Color.WHITE);
-		painelBotao.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
 
 		JButton adc = new JButton("ADICIONAR PRODUTO");
 		adc.setBackground(new Color(40, 167, 69)); // Verde mais moderno
@@ -102,7 +97,7 @@ public class EstoqueVendaController {
 		adc.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 		adc.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-		// Efeito hover
+		// Efeito hover para botão adicionar
 		adc.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
 			public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -114,24 +109,59 @@ public class EstoqueVendaController {
 				adc.setBackground(new Color(40, 167, 69)); // Volta para a cor original
 			}
 		});
-		
-		// Ativar com tecla "Enter"
-		campoCodigo.addKeyListener(new KeyAdapter() {
-		    @Override
-		    public void keyPressed(KeyEvent e) {
-		        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-		            adc.doClick(); 
-		            campoCodigo.setText("");
-		            campoQtd.setText("");
-		            campoQtd.requestFocus();
-		        }
-		    }
+
+		// Botão FINALIZAR VENDA
+		JButton finalizarVenda = new JButton("FINALIZAR VENDA");
+		finalizarVenda.setBackground(new Color(220, 53, 69));
+		finalizarVenda.setForeground(Color.WHITE);
+		finalizarVenda.setFocusable(false);
+		finalizarVenda.setFont(new Font("Arial", Font.BOLD, 14));
+		finalizarVenda.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		finalizarVenda.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+		// Efeito hover para botão finalizar venda
+		finalizarVenda.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseEntered(java.awt.event.MouseEvent evt) {
+				finalizarVenda.setBackground(new Color(200, 35, 51));
+			}
+
+			@Override
+			public void mouseExited(java.awt.event.MouseEvent evt) {
+				finalizarVenda.setBackground(new Color(220, 53, 69));
+			}
 		});
 
-		// Definir tamanho preferido
-		adc.setPreferredSize(new Dimension(300, 40));
+		// Ativar botão adicionar com tecla "Enter"
+		campoCodigo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					adc.doClick();
+					campoCodigo.setText("");
+					campoQtd.setText("");
+					campoQtd.requestFocus();
+				}
+			}
+		});
+
+		KeyStroke f9KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0);
+		finalizarVenda.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(f9KeyStroke, "finalizarVenda");
+		finalizarVenda.getActionMap().put("finalizarVenda", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				finalizarVenda.doClick();
+			}
+		});
+
+		// Definir tamanhos preferidos
+		Dimension tamanhoBotao = new Dimension(160, 40);
+		adc.setPreferredSize(tamanhoBotao);
+		finalizarVenda.setPreferredSize(tamanhoBotao);
 
 		painelBotao.add(adc);
+		painelBotao.add(Box.createVerticalStrut(10));
+		painelBotao.add(finalizarVenda);
 		painelEsquerdo.add(painelBotao);
 
 		// Adicionar um espaçamento após o botão
@@ -274,17 +304,6 @@ public class EstoqueVendaController {
 		troco.setForeground(azulPrincipal);
 		painelTroco.add(troco);
 		painelInferior.add(painelTroco);
-		
-		painelPrincipal.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-		      .put(KeyStroke.getKeyStroke("F9"), "abrirTela");
-
-		painelPrincipal.getActionMap().put("abrirTela", new AbstractAction() {
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		        new FinalVenda(); 
-		    }
-		});
-
 
 		// -------------------- OPERAÇÕES DE VENDA --------------------
 		// Inicialmente um teste, quero ver se manualmente um produto consegue ser
@@ -309,7 +328,6 @@ public class EstoqueVendaController {
 							String.format("R$ %.2f", precoUnitLabel), String.format("R$ %.2f", total) };
 
 					modelo.addRow(row);
-					
 
 					totalItem.setText(String.format("R$ %.2f", total));
 					codigo.setText(campoCodigoBd);
@@ -322,34 +340,34 @@ public class EstoqueVendaController {
 						double valor = Double.parseDouble(valorStr);
 						subtotal += valor;
 					}
-					
-
 
 					// Atualiza label
 					subtotalLabel.setText(String.format("R$ %.2f", subtotal));
 
 					nomeItem.setText(nomeProduto);
 					
-					/*
-					 * ItemVenda item = new ItemVenda(
-							campoCodigoBdInt,
-							nomeProduto,
-							campoQuantidadeInt,
-							precoUnitLabel,
-							total
-							);
-					itensDaVenda.add(item);
-					
-					double valorTotal = 0.0;
-					for (ItemVenda item1 : itensDaVenda) {
-					    valorTotal += item1.getTotal();
-					}
+					finalizarVenda.addActionListener(new ActionListener() {
 
-					Venda venda = new Venda(itensDaVenda, valorTotal);
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String valorTexto = subtotalLabel.getText().replace("R$ ", "").replace(",", ".");
+							double subtotal = Double.parseDouble(valorTexto);
 
-					svCSV.salvarVendaCSV(venda);
-					 */
-					
+							abrirTelaPagamento(subtotal);
+							ItemVenda item = new ItemVenda(campoCodigoBdInt, nomeProduto, campoQuantidadeInt, precoUnitLabel,
+									total);
+							itensDaVenda.add(item);
+
+							double valorTotal = 0.0;
+							for (ItemVenda item1 : itensDaVenda) {
+								valorTotal += item1.getTotal();
+							}
+
+							Venda venda = new Venda(itensDaVenda, valorTotal);
+
+
+						}
+					});
 
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -358,6 +376,7 @@ public class EstoqueVendaController {
 			}
 		});
 
+		
 		// -------------------- FIM --------------------
 
 		painelPrincipal.add(painelInferior, BorderLayout.SOUTH);
@@ -366,6 +385,79 @@ public class EstoqueVendaController {
 
 		janelaPrincipal.setVisible(true);
 
+	}
+
+	public void abrirTelaPagamento(double subtotal) {
+
+		Color azulPrincipal = new Color(41, 98, 149);
+
+		JFrame telaPagamento = new JFrame();
+		telaPagamento.setTitle("Metodo de pagamento");
+		telaPagamento.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		telaPagamento.setSize(400, 300);
+		telaPagamento.setLocationRelativeTo(null);
+
+		// Header
+		JPanel header = new JPanel();
+		header.setBackground(azulPrincipal);
+		header.setPreferredSize(new Dimension(0, 60));
+		JLabel titulo = new JLabel("Metodo de Pagamento");
+		titulo.setFont(new Font("Arial", Font.BOLD, 24));
+		titulo.setForeground(Color.WHITE);
+		header.add(titulo);
+		telaPagamento.add(header, BorderLayout.NORTH);
+
+		// Painel principal
+		JPanel painelPagamento = new JPanel(new GridBagLayout());
+		painelPagamento.setBackground(Color.WHITE);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(10, 10, 10, 10);
+
+		// Valor
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		painelPagamento.add(new JLabel("Valor:"), gbc);
+
+		JTextField txtValor = new JTextField(String.format("R$ %.2f", subtotal), 15);
+		txtValor.setEditable(false);
+		gbc.gridx = 1;
+		painelPagamento.add(txtValor, gbc);
+
+		// Método de pagamento
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		painelPagamento.add(new JLabel("Método:"), gbc);
+
+		JComboBox<String> cbMetodoPagamento = new JComboBox<>(
+				new String[] { "Cartão de Crédito", "Cartão de Débito", "PIX", "Boleto" });
+		gbc.gridx = 1;
+		painelPagamento.add(cbMetodoPagamento, gbc);
+
+		JLabel lblStatus = new JLabel("");
+		lblStatus.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStatus.setFont(new Font("Arial", Font.PLAIN, 12));
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.gridwidth = 2;
+		painelPagamento.add(lblStatus, gbc);
+
+		JButton btnPagar = new JButton("Pagar");
+		btnPagar.setBackground(new Color(40, 167, 69));
+		btnPagar.setForeground(Color.WHITE);
+		btnPagar.setFont(new Font("Arial", Font.BOLD, 14));
+		btnPagar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 
+			}
+		});
+
+		gbc.gridy = 3;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		painelPagamento.add(btnPagar, gbc);
+
+		telaPagamento.add(painelPagamento, BorderLayout.CENTER);
+		telaPagamento.setVisible(true);
 	}
 
 }
