@@ -42,8 +42,8 @@ src/
 │   └── Venda.java                          # Modelo de venda
 │
 ├── br.com.estoque.view
-│   ├── Interface.java                      # Inicialização da interface
-│   ├── PainelGraficoEstoque.java           # Interface principal com Swing
+│   ├── Interface.java                      # Interface principal com Swing
+│   ├── PainelGraficoEstoque.java           # Gráficos
 │   └── info.java                           # Dados auxiliares
 │
 └── module-info.java
